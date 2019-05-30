@@ -216,10 +216,10 @@ uuid = "4d00f742-c7ba-57c2-abde-4428a4b178cb"
 version = "0.7.4"
 
 [[HTTP]]
-deps = ["Base64", "Dates", "Distributed", "IniFile", "MbedTLS", "Random", "Sockets", "Test"]
-git-tree-sha1 = "25db0e3f27bd5715814ca7e4ad22025fdcf5cc6e"
+deps = ["Base64", "Dates", "IniFile", "MbedTLS", "Sockets"]
+git-tree-sha1 = "bf00993b8a4c1bc65b0d7ee7667b1837e501d892"
 uuid = "cd3eb016-35fb-5094-929b-558a96fad6f3"
-version = "0.8.0"
+version = "0.8.1"
 
 [[Hiccup]]
 deps = ["MacroTools", "Test"]
