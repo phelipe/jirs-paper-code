@@ -1,0 +1,16 @@
+name = "IJRS"
+uuid = "cabb2864-82d9-11e9-2d34-050ad8797207"
+authors = ["Phelipe Wesley <phelipewesleydeoliveira@gmail.com>"]
+version = "0.1.0"
+
+[deps]
+IJulia = "7073ff75-c697-5162-941a-fcdaad2a7d2a"
+LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
+PerformanceIndex = "43f0c6ec-cf5d-5607-85a6-88da576adc3e"
+Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
+RigidBodyDynamics = "366cf18f-59d5-5db9-a4de-86a9f6786172"
+RigidBodySim = "e61f16d8-a6b7-5689-8d03-627c2b27ebce"
+SpecialFunctions = "276daf66-3868-5448-9aa4-cd146d93841b"
+Statistics = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
+Swarm = "3cf6e28f-4d0b-58dd-b4ae-e6abc0aa9cf7"
+Trajectory = "3951a86c-04ec-5dcd-9551-c3345ec7ad40"
