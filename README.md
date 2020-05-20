@@ -31,8 +31,8 @@ this will install  packages and start jupyter.
 
 
 # Notebooks
-    - [Optimization](1-optimization.ipynb)
-    - [Optimization Fractional Control](2-optimization-frac.ipynb)
-    - [Results](3-results.ipynb)
-    - [Results with disturbance](4-results-dist.ipynb)
-    - [Results with model modification](5-results-load.ipynb)
+  - [Optimization](1-optimization.ipynb)
+  - [Optimization Fractional Control](2-optimization-frac.ipynb)
+  - [Results](3-results.ipynb)
+  - [Results with disturbance](4-results-dist.ipynb)
+  - [Results with model modification](5-results-load.ipynb)
