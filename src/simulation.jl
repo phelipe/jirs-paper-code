@@ -8,27 +8,20 @@ function saturador!(data, limite)
 end
 
 
-# função auxiliar do fracionário
-  # remove o primeiro termo do vetor 'vec' e adiciona 'new' ao final dele      
 function change!(vec, new)
     popfirst!(vec)
     push!(vec, new )
 end        
-                
-# OBS: aqui coloquei para o tempo do controlador ser 10x menor que o tempo de captura dos dados             
-# essa função simula o sistema com um PD analógico e retorna as resposta do sistema
-# e o torque máximo em módulo com controlador fracionário
+
 function simulationPDDigitalFractional(kp::Vector{Float64}, kv::Vector{Float64}, lambda::Vector{Float64},
     positions::Vector{T}, velocitys::Vector{T}, acelerations::Vector{T},
     jerks::Vector{T}, mechanism, state::MechanismState, Δt::Float64 = 1e-2,
     stime = 5.; showtorque = false, maxTorque = fill(Inf,num_positions(state)) ) where {T<:Function}
-    # prepara ganhos do controlador PID fracionário
     kp = diagm(0 => kp)
     kv = diagm(0 => kv)
     max_torque = zeros(num_positions(state))
     jounts_quantity = num_positions(state)
     data_log = [[0.], [0.]]
-    # cria controlador para o sistema
     step_controller = Δt / 10.
     function control!(τ::AbstractVector, t, state::MechanismState)
         e = map(x->x(t), positions) - configuration(state)
@@ -42,14 +35,12 @@ function simulationPDDigitalFractional(kp::Vector{Float64}, kv::Vector{Float64},
         max_torque[:]= map( (a,b)-> max(a,abs(b)),max_torque[:],τ[:] )
         τ[:]
     end
-    # cria variável de torques iniciais (todos nulos)
-    # e faz com que o controlador seja discreto.
     τ = similar(configuration(state)) .* 0.0
     controller = PeriodicController(τ, step_controller, control!)
     digital_system = Dynamics(mechanism, controller)
     problem = ODEProblem(digital_system, state, (0., stime))
     solution = solve(problem, Tsit5(), saveat = Δt, maxiters = 1e9, force_dtmin=true, reltol=1e-5, abstol=1e-5)
-    # organiza a saída para ser os erros
+
     data = solution.u
     time_out = solution.t[1:end-1]
 
@@ -70,7 +61,6 @@ function simulationPDDigitalFractional(kp::Vector{Float64}, kv::Vector{Float64},
     ej = map(x -> x./tj, diff.(ea))
     ta = time_out[1:length(ea[1])]
     tj = time_out[1:length(ej[1])]
-    # retorna posião, velocidade, aceleração e jerk
 
     if showtorque
         return     ex, ev, ea, ej, time_out, ta, tj, max_torque
@@ -92,25 +82,21 @@ function erroPDDigitalFractional(kp::Vector{Float64}, kv::Vector{Float64}, lambd
         ea[i] =  [ acelerations[i](x) for x in ta ] - ea[i]
         ej[i] =  [ jerks[i](x) for x in tj ] - ej[i]
     end
-    # retorna erro de posição, velocidade, aceleração e jerk
+
     ex, ev, ea, ej, time_out, ta, tj     
 end;
-                
-########## PERTUBAÇÂO
-# OBS: aqui coloquei para o tempo do controlador ser 10x menor que o tempo de captura dos dados             
-# essa função simula o sistema com um PD analógico e retorna as resposta do sistema
-# e o torque máximo em módulo com controlador fracionário
+
+# Simulation with Disturbance
 function simulationPDDigitalFractionalPert(kp::Vector{Float64}, kv::Vector{Float64}, lambda::Vector{Float64},
     positions::Vector{T}, velocitys::Vector{T}, acelerations::Vector{T},
     jerks::Vector{T}, mechanism, state::MechanismState, pert::Function , Δt::Float64 = 1e-2,
     stime = 5.; showtorque = false, maxTorque = fill(Inf,num_positions(state)) ) where {T<:Function}
-    # prepara ganhos do controlador PID fracionário
     kp = diagm(0 => kp)
     kv = diagm(0 => kv)
     max_torque = zeros(num_positions(state))
     jounts_quantity = num_positions(state)
     data_log = [[0.], [0.]]
-    # cria controlador para o sistema
+
     step_controller = Δt / 10.
     function control!(τ::AbstractVector, t, state::MechanismState)
         e = map(x->x(t), positions) - configuration(state)
@@ -125,14 +111,13 @@ function simulationPDDigitalFractionalPert(kp::Vector{Float64}, kv::Vector{Float
         max_torque[:]= map( (a,b)-> max(a,abs(b)),max_torque[:],τ[:] )
         τ[:]
     end
-    # cria variável de torques iniciais (todos nulos)
-    # e faz com que o controlador seja discreto.
+
     τ = similar(configuration(state)) .* 0.0
     controller = PeriodicController(τ, step_controller, control!)
     digital_system = Dynamics(mechanism, controller)
     problem = ODEProblem(digital_system, state, (0., stime))
     solution = solve(problem, Tsit5(), saveat = Δt, maxiters = 1e9, force_dtmin=true, reltol=1e-5, abstol=1e-5)
-    # organiza a saída para ser os erros
+
     data = solution.u
     time_out = solution.t[1:end-1]
 
@@ -153,8 +138,7 @@ function simulationPDDigitalFractionalPert(kp::Vector{Float64}, kv::Vector{Float
     ej = map(x -> x./tj, diff.(ea))
     ta = time_out[1:length(ea[1])]
     tj = time_out[1:length(ej[1])]
-    # retorna posião, velocidade, aceleração e jerk
-
+ 
     if showtorque
         return     ex, ev, ea, ej, time_out, ta, tj, max_torque
     else
@@ -175,7 +159,7 @@ function erroPDDigitalFractionalPert(kp::Vector{Float64}, kv::Vector{Float64}, l
         ea[i] =  [ acelerations[i](x) for x in ta ] - ea[i]
         ej[i] =  [ jerks[i](x) for x in tj ] - ej[i]
     end
-    # retorna erro de posição, velocidade, aceleração e jerk
+
     ex, ev, ea, ej, time_out, ta, tj     
 end;                
                 
